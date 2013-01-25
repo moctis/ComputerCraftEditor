@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace WindowsFormsApplication1
+namespace ComputerCraftEditor
 {
     using System.Diagnostics;
     using System.IO;
@@ -16,6 +16,8 @@ namespace WindowsFormsApplication1
     public partial class Form1 : Form
     {
         private string basePath;
+
+        private IntPtr ptr;
 
         public Form1()
         {
@@ -36,6 +38,8 @@ namespace WindowsFormsApplication1
             SendKeys(text);
             Save();
 
+            this.button2_Click(sender, e);
+
             var node = this.ScanNode(this.textBox2.Text, this.treeView1.Nodes);
             if (node != null) node.ForeColor = Color.Gray;
 
@@ -43,7 +47,7 @@ namespace WindowsFormsApplication1
 
         private void ActiveWindow(string title)
         {
-            var ptr = User32.FindWindowByCaption(IntPtr.Zero, title);
+            ptr = User32.FindWindowByCaption(IntPtr.Zero, title);
             User32.SetForegroundWindow((int)ptr);
             Thread.Sleep(2000);
         }
@@ -66,6 +70,7 @@ namespace WindowsFormsApplication1
         {
             int indent = 0;
             bool increaseIndent = true;
+            User32.SetForegroundWindow((int)ptr);
             foreach (var ch in text)
             {
                 if (ch == ' ' && increaseIndent) indent += 1;
@@ -78,8 +83,8 @@ namespace WindowsFormsApplication1
                         Keyboard.Simulate(Keys.Back);
                     increaseIndent = true;
                     indent = 0;
-                } else if (ch == '^')
-                    Keyboard.Simulate(Keys.LControlKey);
+                    User32.SetForegroundWindow((int)ptr);
+                }  
                 else
                     Keyboard.SimulateChar(ch);
                 Thread.Sleep(20);
