@@ -22,6 +22,7 @@ namespace ComputerCraftEditor
         public Form1()
         {
             InitializeComponent();
+            KeyDelay = 20;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -80,17 +81,22 @@ namespace ComputerCraftEditor
                 if (ch == '\n')
                 {
                     for (int i = 0; i < indent; i++)
+                    {
                         Keyboard.Simulate(Keys.Back);
+                        Thread.Sleep(KeyDelay);
+                    }
                     increaseIndent = true;
                     indent = 0;
                     User32.SetForegroundWindow((int)ptr);
                 }  
                 else
                     Keyboard.SimulateChar(ch);
-                Thread.Sleep(20);
+                Thread.Sleep(KeyDelay);
             }
-            Thread.Sleep(500);
+            Thread.Sleep(500 * KeyDelay / 20);
         }
+
+        protected int KeyDelay { get; set; }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -203,6 +209,11 @@ namespace ComputerCraftEditor
                 textBox1.SelectedText = "  ";
                 e.Handled = true;
             }
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            KeyDelay = (int) numericUpDown1.Value;
         }
     }
 }
